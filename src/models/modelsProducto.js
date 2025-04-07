@@ -182,8 +182,20 @@ export const deleteProducto = async (id) => {
 
 export const selectAllProductos_joinItems = async () => {
     const connect = await db.connect();
-    let sql = 'SELECT p.id, i.nombre, i.descripcion, p.stock, p.precio, p.coste '
-    + ' FROM productos p INNER JOIN item i ON p.item_id = i.id';
+
+    let sql = 'SELECT ' +
+    'p.producto_id, p.item_id, '+
+    'p.item_nombre as nombre, '+
+    'p.item_descripcion as descripcion, '+
+    'p.categoria_id as categoria_id, '+
+    'p.categoria_descripcion as categoria_descripcion, '+
+    'p.producto_stock as stock, '+
+    'p.producto_precio as precio, '+
+    'p.producto_coste as coste  '+
+
+    'FROM vista_productos_con_categoria p ' +
+    'WHERE p.item_tipo = \'PRODUCTO\'';
+
     try {
         const result = await connect.query(sql);
         console.log('Resultados encontrados');
