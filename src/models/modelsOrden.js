@@ -28,7 +28,7 @@ export const selectOrdenById = async (id) => {
     let sql = 'SELECT * FROM orden WHERE id = $1';
     try {
         const result = await connect.query(sql, [id]);
-        console.log('Orden encontrada');
+        //console.log('Orden encontrada');
         return result.rows[0];
     } catch (error) {
         console.error(error.message);
