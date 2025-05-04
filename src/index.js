@@ -17,8 +17,8 @@ app.use('/api/direccion', routes.direccion);
 app.use('/api/clienteDireccion', routes.clienteDireccion);
 app.use('/api/telefono', routes.telefono);
 app.use('/api/Correo', routes.correo);
-app.use('/api/facturas', routes.facturas);
 
+app.use('/api/facturas', routes.facturas);
 app.use('/api/products', routes.productos);
 app.use('/api/ordenes', routes.ordenes);
 
