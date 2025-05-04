@@ -3,6 +3,7 @@ const sqlOrden = require('../models/modelsOrden');
 const sqlCliente = require('../models/modelsCliente');
 const sqlCorreo = require('../models/modelsCorreo');
 const sgMail = require('@sendgrid/mail');
+const msgCorreo = require('../utils/formatoFactura');
 
 // Configurar SendGrid con la API Key desde las variables de entorno
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -121,77 +122,66 @@ exports.sendFacturaById = async (req, res) => {
 
         // Obtener el detalle de la orden
         const detalleOrden = await sqlOrden.selectDetallesOrdenById(orden.id);
-        let subtotal = 0;
-        let impuesto = 0;
-        let descuento = 0;
-        for (detalle of detalleOrden) {
-            subtotal += parseFloat(detalle.subtotal);
-            impuesto += parseFloat(detalle.impuesto);
-            descuento += parseFloat(detalle.descuento);
-        }
-        // Calcular el total de la factura
-        const total = subtotal + (subtotal * (impuesto / 100)) - (subtotal * (descuento / 100));
+        detalleOrden.map(detalle => (
+            detalle.cantidad = parseInt(detalle.cantidad),
+            detalle.subtotal = parseFloat(detalle.subtotal),
+            detalle.impuestoPorcetanje = detalle.impuesto,
+            detalle.impuesto = (parseFloat(detalle.impuesto)/100),
+            detalle.descuentoPorcetanje = detalle.descuento,
+            detalle.descuento = (parseFloat(detalle.descuento)/100),
+
+            detalle.precioUnitario= detalle.subtotal/detalle.cantidad,
+            detalle.impuesto = detalle.precioUnitario * detalle.impuesto,
+            detalle.descuento = (detalle.precioUnitario + detalle.impuesto) * detalle.descuento,
+            detalle.subtotal = (detalle.precioUnitario + detalle.impuesto - detalle.descuento)* detalle.cantidad
+            ));
         
-
-        // Crear el contenido del correo
-        const msg = {
-            to: correos.map(correo => correo.email), // Lista de correos del cliente
-            from: process.env.SENDGRID_FROM_EMAIL, // Correo del remitente (configurado en variables de entorno)
-            subject: `Factura ${factura.serie}-${factura.numero}`,
-            text: `Estimado ${cliente[0].razon_social}, adjuntamos la factura ${factura.serie}-${factura.numero}.`,
-            html: `<p>Estimado <strong>${cliente[0].razon_social}</strong>,</p>
-                   <p>Adjuntamos la factura <strong>${factura.serie}-${factura.numero}</strong>.</p>
-                     <p>Factura:</p>
-                     ${Object.entries(factura).map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('')}
-                   <p>Orden:</p>
-                     ${Object.entries(orden).map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('')}
-                     <p>Detalles de la orden:</p>
-                        <table border="1" style="border-collapse: collapse;">
-                            <tr>
-                                <th>Item</th>
-                                <th>Cantidad</th>
-                                <th>Monto</th>
-                                <th>Impuesto</th>
-                                <th>Descuento</th>
-                            </tr>
-                            ${detalleOrden.map(detalle => `
-                                <tr>
-                                    <td>${detalle.Item}</td>
-                                    <td>${detalle.cantidad}</td>
-                                    <td>${detalle.subtotal}</td>
-                                    <td>${detalle.impuesto}</td>
-                                    <td>${detalle.descuento}</td>
-                                </tr>`).join('')}
-                        </table>
-                        <p>Totales:</p>
-
-                        <tr>
-                            <td colspan="2" style="text-align: right;"><strong>Total Subtotal:</strong></td>
-                            <td colspan="3">${subtotal.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="text-align: right;"><strong>Total Impuestos:</strong></td>
-                            <td colspan="3">${impuesto.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="text-align: right;"><strong>Total Descuentos:</strong></td>
-                            <td colspan="3">-${descuento.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="text-align: right;"><strong>Total:</strong></td>
-                            <td colspan="3">${total.toFixed(2)}</td>
-                        </tr>
-
-                   <p>Gracias por su preferencia.</p>`,
+        //objeto con los datos de la factura
+        const datosFactura = {
+            serie: factura.serie,
+            numero: factura.numero,
+            fecha: factura.fecha,
+            orden_id: factura.orden_id,
+            cliente_id: cliente[0].id,
+            cliente_nombre: cliente[0].razon_social,
+            cliente_direccion: cliente[0].direccion,
+            cliente_telefono: cliente[0].telefono,
+            cliente_correo: correos.map(correo => correo.email),//.join(', '),
+            orden_fecha: orden.fecha,
+            orden_total: orden.total,
+            orden_estado: orden.estado,
+            orden_detalle: detalleOrden.map(detalle => ({
+                item: detalle.Item,
+                cantidad: detalle.cantidad,
+                precioUnitario: detalle.precioUnitario.toFixed(2),
+                impuesto: detalle.impuestoPorcetanje,
+                descuento: detalle.descuentoPorcetanje,
+                subtotal: detalle.subtotal.toFixed(2),
+            })),
+            orden_subtotal: 0,
+            orden_impuesto: 0,
+            orden_descuento: 0,
+            orden_total: 0,
         };
 
+        for (detalle of detalleOrden) {
+            datosFactura.orden_subtotal += detalle.precioUnitario * detalle.cantidad;
+            datosFactura.orden_impuesto += detalle.impuesto;
+            datosFactura.orden_descuento += detalle.descuento;
+        }
+        datosFactura.orden_total = datosFactura.orden_subtotal + datosFactura.orden_impuesto - datosFactura.orden_descuento;
+
         // Enviar el correo
+        const msg = msgCorreo.mailOptions(datosFactura);
+        res.send(msg.html)
+        /*
         await sgMail.send(msg);
 
         res.json({ 
                 msg: `Factura ${factura.serie}-${factura.numero} enviada correctamente`, 
                 correos: correos.map(correo => correo.email) 
             });
+        */    
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ msg: 'Error al enviar la factura', error: error.message });

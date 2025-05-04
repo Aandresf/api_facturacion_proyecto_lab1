@@ -12,7 +12,7 @@ router.get('/:id', controller.getFacturaById);
 router.post('/', controller.createFactura);
 
 // POST /api/facturas/send/:id
-router.post('/send/:id', controller.sendFacturaById);
+router.get('/send/:id', controller.sendFacturaById);
 
 // PUT /api/facturas/:id
 router.put('/:id', controller.updateFactura);
