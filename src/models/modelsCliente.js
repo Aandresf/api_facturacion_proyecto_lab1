@@ -63,15 +63,15 @@ export const selectCliente_ByDni = async (dni)  => {
 
 /**
  * Para hacer incersiones en la tabla cliente
- * @param {{dni:number, razon_social:string}} cli
+ * @param {{dni:number, razon_social:string, correo:email, telefono:string, direccion:string}} cli
  * @returns nuevos clientes registrados
  */
 
 export const insertCliente = async (cli) => {
     const connect = await db.connect();
-    let sql = 'INSERT INTO cliente (dni, razon_social, estado) VALUES ($1, $2, $3) RETURNING *';
+    let sql = 'INSERT INTO cliente (dni, razon_social, correo, telefono, direccion, estado) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
     try {
-        const result = await connect.query(sql, [cli.dni, cli.razon_social, '1']);
+        const result = await connect.query(sql, [cli.dni, cli.razon_social, cli.correo, cli.telefono, cli.direccion, '1']);
         console.log('Resultado de la base de datos:', result.rows);
 
         return result.rows;
@@ -84,27 +84,16 @@ export const insertCliente = async (cli) => {
 
 /**
  * Actualiza a un cliente
- * @param {{id:number, dni:number, razon_social:string, estado:[1,2]}} cli
+ * @param {{id:number, dni:number, razon_social:string, correo:email, telefono:string, direccion:string, estado:[1,2]}} cli
  * @returns al cliente actualizado
  */
 
 export const updateCliente = async (cli) => {
-    //Se verifica que el cliente exista
-    const clienteAux = await selectClienteById(cli.id);
-    if(clienteAux.length === 0){
-        console.log('Cliente no Encontrado');
-        return
-    } else {
-        // se verifica el objeto cliente para que no se pierdan los datos
-        cli.dni = cli.dni || clienteAux[0].dni;
-        cli.razon_social = cli.razon_social || clienteAux[0].razon_social
-        cli.estado = cli.estado || clienteAux[0].estado;
-    }
     //Se actualiza al cliente
     const connect = await db.connect();
-    let sql = 'UPDATE cliente SET dni = $1, razon_social = $2, estado = $3 WHERE id = $4 RETURNING *';
+    let sql = 'UPDATE cliente SET dni = $1, razon_social = $2, correo = $3, telefono = $4, direccion = $5, estado = $6 WHERE id = $7 RETURNING *';
     try {
-        const result = await connect.query(sql, [cli.dni, cli.razon_social, cli.estado, cli.id]);
+        const result = await connect.query(sql, [cli.dni, cli.razon_social, cli.correo, cli.telefono, cli.direccion, cli.estado, cli.id]);
         console.log('Cliente Actualizado');
         return result.rows;
     } catch (error) {

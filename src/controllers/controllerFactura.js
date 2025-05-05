@@ -111,15 +111,6 @@ exports.sendFacturaById = async (req, res) => {
             return res.status(404).json({ msg: 'Cliente no encontrado' });
         }
 
-        // Obtener los correos del cliente
-        const correos = await sqlCorreo.selectCorreoByClienteId(cliente[0].id);
-        if (!correos || correos.length === 0) {
-            return res.status(404).json({ msg: 'No se encontraron correos para el cliente' });
-        }
-        correos.forEach(correo => {
-            correo.email = correo.descripcion + '@' + correo.dominio; // Crear el email completo
-        });
-
         // Obtener el detalle de la orden
         const detalleOrden = await sqlOrden.selectDetallesOrdenById(orden.id);
         detalleOrden.map(detalle => (
@@ -146,7 +137,7 @@ exports.sendFacturaById = async (req, res) => {
             cliente_nombre: cliente[0].razon_social,
             cliente_direccion: cliente[0].direccion,
             cliente_telefono: cliente[0].telefono,
-            cliente_correo: correos.map(correo => correo.email),//.join(', '),
+            cliente_correo: cliente[0].correo,
             orden_fecha: orden.fecha,
             orden_total: orden.total,
             orden_estado: orden.estado,

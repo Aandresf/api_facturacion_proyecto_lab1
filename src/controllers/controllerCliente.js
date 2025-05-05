@@ -1,5 +1,36 @@
 const sql = require('../models/modelsCliente');
 
+const validarCliente = async cli => {
+    const errors = {};
+
+    // Validamos el dni
+    if (isNaN(cli.dni) || cli.dni <= 0) {
+        errors.dni = 'DNI invalido';
+    }
+    // Validamos la razon social
+    if (cli.razon_social.length < 3) {
+        errors.razon_social = 'Razon social invalida';
+    }
+    // Validamos el correo
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cli.correo)) {
+        errors.correo = 'Correo invalido';
+    }
+    // Validamos el telefono
+    if (cli.telefono && !/^(0414|0424|0416|0426|0412)\d{7}$/.test(cli.telefono)) {
+        errors.telefono = 'Telefono invalido';
+    }
+    // Validamos la direccion
+    if (cli.direccion && cli.direccion.length < 5) {
+        errors.direccion = 'Direccion invalida';
+    }
+    // Si hay errores, los enviamos como respuesta
+    if (Object.keys(errors).length > 0) {
+        return errors;
+    } else {
+        return true;
+    }
+}
+
 // GET /api/cliente
 exports.getAllCliente = async (req, res) => {
     try {
@@ -25,17 +56,36 @@ exports.getClienteById = async (req, res) => {
     }
 }
 
-// POST /api/clientes 
+/** POST /api/clientes 
+ * @param {{dni:number, razon_social:string, correo:email, telefono:string, direccion:string}} req 
+ * @param {*} res 
+ * @returns 
+ */
 exports.createCliente = async (req, res) => {
-    const { dni, razon_social } = req.body;
-    console.log('Datos recibidos:', { dni, razon_social });
-    if (!dni || !razon_social) {
-        return res.status(400).json({ msg: 'dni y razon social son necesarios' });
+    const newCliente = {
+        dni : parseInt(req.body.dni) || 0,
+        razon_social : req.body.razon_social || '',
+        correo : req.body.correo || '',
+        telefono : req.body.telefono || null,
+        direccion : req.body.direccion || null,
     }
-    const cliente = { dni, razon_social };
+
+    console.log('Datos recibidos:', newCliente);
+    // Validamos que el dni no exista en la base de datos
+    const clienteExistente = await sql.selectCliente_ByDni(newCliente.dni);
+    
+    if (clienteExistente.length > 0) {
+        return res.status(409).json({ msg: 'El cliente ya existe' });
+    }
+
+    // Validamos el cliente
+    const validacion = await validarCliente(newCliente);
+    if (validacion !== true) {
+        return res.status(400).json({ validacion});
+    }
 
     try {
-        const result = await sql.insertCliente(cliente);
+        const result = await sql.insertCliente(newCliente);
         res.json(result[0]);
     } catch (error) {
         console.error(error.message);
@@ -45,12 +95,34 @@ exports.createCliente = async (req, res) => {
 
 // PUT /api/cliente:id
 exports.updateCliente = async (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    const { dni, razon_social, estado } = req.body;
-    const cliente = { id, dni, razon_social, estado };
+    const id = parseInt(req.params.id);
+
+    const cliente = await sql.selectClienteById(id);
+    if(cliente.length === 0){
+        console.log('Cliente no Encontrado');
+        return res.status(404).json({ msg: 'Cliente no encontrado' });
+    }
+
+    const updateCliente = {
+        id : id,
+        dni : cliente[0].dni,
+        razon_social : req.body.razon_social || cliente[0].razon_social,
+        correo : req.body.correo || cliente[0].correo,
+        telefono : req.body.telefono || cliente[0].telefono,
+        direccion : req.body.direccion || cliente[0].direccion,
+        estado : cliente[0].estado
+    }
+
+    console.log('Datos recibidos:', updateCliente);
+
+    // Validamos el cliente
+    const validacion = await validarCliente(updateCliente);
+    if (validacion !== true) {
+        return res.status(400).json(validacion);
+    }
 
     try {
-        const result = await sql.updateCliente(cliente);
+        const result = await sql.updateCliente(updateCliente);
         res.json(result[0]);
     } catch (error) {
         console.error(error.message);
