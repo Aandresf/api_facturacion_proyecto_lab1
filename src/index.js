@@ -1,27 +1,35 @@
 const express = require('express');
 const db = require('./utils/db.js');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger.json');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 5000;
 
 app.use(express.json());
 
+
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//console.log('configuracion swagger:', swaggerSpec);
+
 // Routes
 const routes = require('./routes/allRoutes.js');
+const routesOrdenes = require('./routes/routesOrdenes.js');
+const routesProductos = require('./routes/routesProducts.js');
+const routesFacturas = require('./routes/routesFacturas.js');
+const routesCliente = require('./routes/routesCliente.js');
+const routesCategorias = require('./routes/routesCategorias.js');
+const routesAjustePrecio = require('./routes/routesAjustePrecios.js');
 
-app.use('/api/categorias', routes.categorias);
-app.use('/api/ajusteprecio', routes.ajusteprecio);
-app.use('/api/items', routes.items);
+//app.use('/api/items', routes.items);
+app.use('/api', routesCategorias);
+app.use('/api', routesAjustePrecio);
 
-app.use('/api/direccion', routes.direccion);
-app.use('/api/clienteDireccion', routes.clienteDireccion);
-app.use('/api/telefono', routes.telefono);
-app.use('/api/Correo', routes.correo);
-
-app.use('/api/cliente', routes.cliente);
-app.use('/api/facturas', routes.facturas);
-app.use('/api/products', routes.productos);
-app.use('/api/ordenes', routes.ordenes);
+app.use('/api', routesCliente);
+app.use('/api', routesFacturas);
+app.use('/api', routesProductos);
+app.use('/api', routesOrdenes);
 
 app.get('/', async (req, res) => {
     try {
@@ -35,6 +43,12 @@ app.get('/', async (req, res) => {
     }
 });
 
+// Endpoint de prueba
+const routesTest = require('./routes/test.js');
+app.use('/api', routesTest)
+
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
+    console.log(`Documentación de la API disponible en http://localhost:${PORT}/docs`);
 });

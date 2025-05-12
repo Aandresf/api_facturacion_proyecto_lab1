@@ -3,18 +3,18 @@ const routes = express.Router();
 const controller = require('../controllers/controllerCliente');
 
 // GET /api/cliente
-routes.get('/', controller.getAllCliente);
+routes.get('/cliente', controller.getAllCliente);
 
 // GET /api/cliente/:id
-routes.get('/:id', controller.getClienteById);
+routes.get('/cliente/:id', controller.getClienteById);
 
 // POST /api/cliente
-routes.post('/', controller.createCliente);
+routes.post('/cliente', controller.createCliente);
 
 // PUT /api/cliente:id
-routes.put('/:id', controller.updateCliente);
+routes.put('/cliente/:id', controller.updateCliente);
 
 // DELETE /api/cliente:id
-routes.delete('/:id', controller.deleteCliente);
+routes.delete('/cliente/:id', controller.deleteCliente);
 
 module.exports = routes;

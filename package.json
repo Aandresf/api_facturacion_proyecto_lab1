@@ -4,17 +4,25 @@
     "description": "API en Node.js",
     "main": "index.js",
     "scripts": {
-        "start": "node src/index.js",
         "initBd": "docker-compose up -d",
-        "stopBd": "docker-compose down"
+        "stopBd": "docker-compose down",
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "docs": "node src/swagger.js"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "Arnaldo flores, Carani Rodriguez",
+    "license": "",
     "dependencies": {
         "@sendgrid/mail": "^8.1.5",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
-        "pg": "^8.14.1"
+        "pg": "^8.14.1",
+        "swagger-ui-express": "^5.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10",
+        "swagger-autogen": "^2.23.7",
+        "swagger-jsdoc": "^6.2.8"
     }
 }

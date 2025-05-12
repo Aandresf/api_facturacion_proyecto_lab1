@@ -11,6 +11,8 @@ const ordenes = require('./routesOrdenes');
 //const detallesOrden = require('./routesDetallesOrden');
 const facturas = require('./routesFacturas');
 
+const test = require('./test');
+
 module.exports = {
     categorias,
     ajusteprecio,
@@ -23,5 +25,6 @@ module.exports = {
     correo,
     ordenes,
     //detallesOrden,
-    facturas
+    facturas,
+    test
 }

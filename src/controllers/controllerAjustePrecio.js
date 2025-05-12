@@ -3,6 +3,7 @@ const sqlItemAjuste = require('../models/modelsItemAjuste');
 
 // GET /api/ajusteprecio
 exports.getAllAjustePrecio = async (req, res) => {
+    // #swagger.tags = ['Ajuste Precio']
     const { tipo, aplicable_a } = req.body;
     try {
         let result;
@@ -25,6 +26,7 @@ exports.getAllAjustePrecio = async (req, res) => {
 
 // GET /api/ajusteprecio/:id
 exports.getAjustePrecioById = async (req, res) => {
+    // #swagger.tags = ['Ajuste Precio']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.selectAjustePrecioById(id);
@@ -40,6 +42,7 @@ exports.getAjustePrecioById = async (req, res) => {
  * @returns {Array} Todos los ajustes, con detalles, del item
  */
 exports.getAjustesByItem = async (item_id) => {
+    // #swagger.tags = ['Ajuste Precio']
     const item = parseInt(item_id, 10)
     try {
         const result = await sqlItemAjuste.selectItemAjuste_byItem_joinAjustePrecio(item)
@@ -53,6 +56,7 @@ exports.getAjustesByItem = async (item_id) => {
 
 // POST /api/ajusteprecio
 exports.createAjustePrecio = async (req, res) => {
+    // #swagger.tags = ['Ajuste Precio']
     const { descripcion, aplicable_a, tipo, valor } = req.body;
     if (!descripcion || !aplicable_a || !tipo || !valor) {
         return res.status(400).json({ msg: '{descripcion, aplicable_a, tipo, valor} son necesarios' });
@@ -70,6 +74,7 @@ exports.createAjustePrecio = async (req, res) => {
 
 // PUT /api/ajusteprecio:id
 exports.updateAjustePrecio = async (req, res) => {
+    // #swagger.tags = ['Ajuste Precio']
     const id = parseInt(req.params.id, 10);
     const { descripcion, aplicable_a, tipo, valor, estado } = req.body;
     const ajustePrecio = { id, descripcion, aplicable_a, tipo, valor, estado };
@@ -85,6 +90,7 @@ exports.updateAjustePrecio = async (req, res) => {
 
 // DELETE /api/ajusteprecio:id
 exports.deleteAjustePrecio = async (req, res) => {
+    // #swagger.tags = ['Ajuste Precio']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.deleteAjustePrecio(id);

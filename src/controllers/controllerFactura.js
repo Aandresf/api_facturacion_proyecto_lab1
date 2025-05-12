@@ -10,6 +10,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // GET /api/facturas
 exports.getAllFacturas = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     try {
         const result = await sql.selectAllFacturas();
         result.forEach(factura => {
@@ -24,6 +25,7 @@ exports.getAllFacturas = async (req, res) => {
 
 // GET /api/facturas/:id
 exports.getFacturaById = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.selectFacturaById(id);
@@ -40,6 +42,7 @@ exports.getFacturaById = async (req, res) => {
 
 // POST /api/facturas
 exports.createFactura = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     const { orden_id, serie, numero, fecha } = req.body;
     if (!orden_id || !serie || !numero) {
         return res.status(400).json({ msg: 'orden_id, serie, numero son necesarios' });
@@ -57,6 +60,7 @@ exports.createFactura = async (req, res) => {
 
 // PUT /api/facturas/:id
 exports.updateFactura = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     const id = parseInt(req.params.id, 10);
     const { orden_id, serie, numero, fecha, estado } = req.body;
     const factura = { id, orden_id, serie, numero, fecha, estado };
@@ -75,6 +79,7 @@ exports.updateFactura = async (req, res) => {
 
 // DELETE /api/facturas/:id
 exports.deleteFactura = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.deleteFactura(id);
@@ -90,6 +95,7 @@ exports.deleteFactura = async (req, res) => {
 
 // POST /api/facturas/send/:id
 exports.sendFacturaById = async (req, res) => {
+    // #swagger.tags = ['Facturas']
     const id = parseInt(req.params.id, 10);
 
     try {

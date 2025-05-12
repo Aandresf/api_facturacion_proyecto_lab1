@@ -3,15 +3,15 @@ const routes = express.Router();
 const controller = require('../controllers/controllerProducts');
 
 // GET /api/products
-routes.get('/', controller.getAllProducts);
-
-// GET /api/products/:id
-routes.get('/:id', controller.getProductById);
+routes.get('/products', controller.getAllProducts);
 
 // POST /api/products/new
-routes.post('/new', controller.createProduct);
+routes.post('/products', controller.createProduct);
+
+// GET /api/products/:id
+routes.get('/products/:id', controller.getProductById);
 
 // PUT /api/products/:id
-routes.put('/:id', controller.updateProduct)
+routes.put('/products/:id', controller.updateProduct)
 
 module.exports = routes;

@@ -12,7 +12,7 @@ CATEGORIA {
 */
 
 import db from '../utils/db.js';
-
+//const db = require('../utils/db');
 
 /**
  * Busca todas las categorias
@@ -84,7 +84,7 @@ export const updateCategoria = async (c) => {
     const categoriaAux = await selectCategoriaById(c.id);
     if(categoriaAux.length === 0){
         console.log('Categoria no encontrada');
-        return 
+        return false
     } else {
         // se verifica el objeto categoria para que no se pierdan los datos
         c.descripcion = c.descripcion || categoriaAux[0].descripcion;
@@ -117,7 +117,7 @@ export const deleteCategoria = async (id) => {
     const categoriaAux = await selectCategoriaById(id);
     if(categoriaAux.length === 0){
         console.log('Categoria no encontrada');
-        return 
+        return false
     }
 
     // se elimina la categoria

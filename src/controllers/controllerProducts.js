@@ -10,6 +10,7 @@ const controllerAjustes = require('../controllers/controllerAjustePrecio')
  * @description Busca un producto por su id y lo devuelve con los detalles de su item
  */
 async function getProduct_Logica(productId) {
+    
     try {
         const product = await sqlPr.selectProducto_ById_joinItems(productId);
         if (product?.length > 0){
@@ -27,6 +28,7 @@ async function getProduct_Logica(productId) {
 */
 
 exports.getAllProducts = async (req, res) => {
+    // #swagger.tags = ['Productos']
     try {
         const result = await sqlPr.selectAllProductos_joinItems();
         res.json(result);
@@ -42,6 +44,7 @@ exports.getAllProducts = async (req, res) => {
 */
 
 exports.getProductById = async (req, res) => {
+    // #swagger.tags = ['Productos']
     const id = parseInt(req.params.id, 10);
     try {
         result = await getProduct_Logica(id)
@@ -58,6 +61,7 @@ exports.getProductById = async (req, res) => {
 */
 
 exports.createProduct = async (req, res) => {
+    // #swagger.tags = ['Productos']
     let { item, idsAjustesPrecios, stock, precio, coste } = req.body;
 
     try{
@@ -138,6 +142,7 @@ exports.createProduct = async (req, res) => {
 */
 
 exports.updateProduct = async (req, res) => {
+    // #swagger.tags = ['Productos']
     const idProduct = parseInt(req.params.id, 10);
     const oldProduct = await getProduct_Logica(idProduct)
     

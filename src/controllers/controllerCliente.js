@@ -33,6 +33,7 @@ const validarCliente = async cli => {
 
 // GET /api/cliente
 exports.getAllCliente = async (req, res) => {
+    // #swagger.tags = ['Cliente']
     try {
         console.log('Iniciando consulta...');
         const result = await sql.selectAllCliente();
@@ -46,6 +47,7 @@ exports.getAllCliente = async (req, res) => {
 
 // GET /api/cliente/:id
 exports.getClienteById = async (req, res) => {
+    // #swagger.tags = ['Cliente']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.selectClienteById(id);
@@ -62,6 +64,7 @@ exports.getClienteById = async (req, res) => {
  * @returns 
  */
 exports.createCliente = async (req, res) => {
+    // #swagger.tags = ['Cliente']
     const newCliente = {
         dni : parseInt(req.body.dni) || 0,
         razon_social : req.body.razon_social || '',
@@ -95,6 +98,7 @@ exports.createCliente = async (req, res) => {
 
 // PUT /api/cliente:id
 exports.updateCliente = async (req, res) => {
+    // #swagger.tags = ['Cliente']
     const id = parseInt(req.params.id);
 
     const cliente = await sql.selectClienteById(id);
@@ -132,6 +136,7 @@ exports.updateCliente = async (req, res) => {
 
 // DELETE /api/cliente:id
 exports.deleteCliente = async (req, res) => {
+    // #swagger.tags = ['Cliente']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.deleteCliente(id);

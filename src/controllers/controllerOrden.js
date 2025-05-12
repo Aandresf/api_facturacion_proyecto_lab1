@@ -6,10 +6,8 @@ const sqlAjustePrecio = require('../models/modelsAjustePrecio');
 const sqlOrden = require('../models/modelsOrden');
 
 // Obtiene todas las ordenes, sin items
-/** GET /api/ordenes
- * @returns Todos las ordenes, sin detalles
- */
 exports.getAllOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     try {
         const result = await sqlOrden.selectAllOrdenes();
         result.forEach(orden => {
@@ -17,19 +15,24 @@ exports.getAllOrden = async (req, res) => {
             //orden.detalles = await sql.selectDetallesOrdenByOrdenId(orden.id);
         });
 
+        // #swagger.response[200] = { description: 'Ordenes obtenidas' }
         res.json(result);
     } catch (error) {
         console.error(error.message);
+        // #swagger.response[500] = { description: 'Error al obtener las ordenes' }
         res.status(500).json({ msg: 'Error al realizar la operación' });
     }
 };
 
 // Obtiene una orden con sus items
 /** GET /api/ordenes/:ordenId
+
+ * @tags Ordenes
  * @param {number} ordenId Id de la orden a buscar
  * @returns La orden seleccionada con los detalles
  */
 exports.getOrdenById = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const ordenId = parseInt(req.params.ordenId, 10);
     try {
         const result = {}
@@ -56,6 +59,7 @@ exports.getOrdenById = async (req, res) => {
  * @returns La orden creada y sus detalles
  */
 exports.createOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const { cliente_id, items } = req.body;
 
     try {
@@ -139,6 +143,7 @@ exports.createOrden = async (req, res) => {
  * @returns El detalle creado
  */
 exports.createDetalleOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const ordenId = parseInt(req.params.ordenId, 10);
     const {item_id, cantidad, ajustePreciosIds = [] } = req.body;
 
@@ -211,6 +216,7 @@ exports.createDetalleOrden = async (req, res) => {
  * @returns El detalle actualizado
  */
 exports.updateDetalleOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const id = parseInt(req.params.id, 10);
     const { cantidad, ajustePreciosIds } = req.body;
 
@@ -286,6 +292,7 @@ exports.updateDetalleOrden = async (req, res) => {
  * @returns El detalle eliminado 
  */
 exports.deleteDetalleOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sql.deleteDetalleOrden(id);
@@ -303,6 +310,7 @@ exports.deleteDetalleOrden = async (req, res) => {
  * @returns La orden actualizada
  */
 exports.updateOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const id = parseInt(req.params.id, 10);
     const { cliente_id, fecha, estado } = req.body;
     const orden = { id, cliente_id, fecha, estado };
@@ -326,6 +334,7 @@ exports.updateOrden = async (req, res) => {
  * @returns La orden eliminada
  */
 exports.deleteOrden = async (req, res) => {
+    // #swagger.tags = ['Ordenes']
     const id = parseInt(req.params.id, 10);
     try {
         const result = await sqlOrden.deleteOrden(id);
