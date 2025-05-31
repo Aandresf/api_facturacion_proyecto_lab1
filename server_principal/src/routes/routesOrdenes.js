@@ -1,21 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/controllerOrden');
+const {verifyToken, verificarRol} = require('../utils/autenticacion');
 
-router.get('/ordenes', controller.getAllOrden);
+router.get('/ordenes', verifyToken, verificarRol('lectura') , controller.getAllOrden);
 
-/**
- * @swagger
- * /ordenes:
- * *   get:
- *      summary: Obtener todas las ordenes
- *      tags: Ordenes
- *    responses:
- *      200:
- * *        description: Lista de ordenes
- *      500:
- * *        description: Error interno del servidor
- */
 router.get('/ordenes/:ordenId', controller.getOrdenById);
 
 // POST /api/ordenes
