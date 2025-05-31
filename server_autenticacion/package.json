@@ -1,28 +1,26 @@
 {
-    "name": "proyecto",
+    "name": "autenticacion",
     "version": "1.0.0",
-    "description": "API en Node.js",
-    "main": "index.js",
+    "description": "API de autenticacion en Node.js",
+    "main": "src/index.js",
     "scripts": {
         "initBd": "docker-compose up -d",
         "stopBd": "docker-compose down",
+        "docs": "node src/swagger.js",
         "start": "node src/index.js",
-        "dev": "nodemon src/index.js",
-        "docs": "node src/swagger.js"
+        "dev": "nodemon src/index.js"
     },
     "keywords": [],
     "author": "Arnaldo flores, Carani Rodriguez",
     "license": "",
     "dependencies": {
-        "@sendgrid/mail": "^8.1.5",
-        "dotenv": "^16.4.7",
-        "express": "^4.21.2",
-        "pg": "^8.14.1",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "pg": "^8.16.0",
         "swagger-ui-express": "^5.0.1"
     },
     "devDependencies": {
         "nodemon": "^3.1.10",
-        "swagger-autogen": "^2.23.7",
-        "swagger-jsdoc": "^6.2.8"
+        "swagger-autogen": "^2.23.7"
     }
 }

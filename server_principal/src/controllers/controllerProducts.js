@@ -1,8 +1,8 @@
 const sqlPr = require('../models/modelsProducto');
 const sqlItems = require('../models/modelsItem');
 
-const controllerCat = require('../controllers/controllerCategorias')
-const controllerAjustes = require('../controllers/controllerAjustePrecio')
+const controllerCat = require('./controllerCategorias')
+const controllerAjustes = require('./controllerAjustePrecio')
 
 /** Busca un producto por su id
  * @param {number} productId

@@ -1,0 +1,29 @@
+{
+    "name": "proyecto",
+    "version": "1.0.0",
+    "description": "API en Node.js",
+    "main": "index.js",
+    "scripts": {
+        "docker": "docker desktop start",
+        "initBd": "docker-compose up -d",
+        "stopBd": "docker-compose down",
+        "docs": "node src/swagger.js",
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js"
+    },
+    "keywords": [],
+    "author": "Arnaldo flores, Carani Rodriguez",
+    "license": "",
+    "dependencies": {
+        "@sendgrid/mail": "^8.1.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "pg": "^8.14.1",
+        "swagger-ui-express": "^5.0.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.10",
+        "swagger-autogen": "^2.23.7",
+        "swagger-jsdoc": "^6.2.8"
+    }
+}
