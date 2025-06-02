@@ -3,18 +3,18 @@ const routes = express.Router();
 const controller = require('../controllers/controllerCategorias');
 
 // GET /api/categorias
-routes.get('/categorias', controller.getAllCategorias);
+routes.get('/categorias', verifyToken, verificarRol('Lectura'), controller.getAllCategorias);
 
 // GET /api/categorias/:id
-routes.get('/categorias/:id', controller.getCategoriaById);
+routes.get('/categorias/:id', verifyToken, verificarRol('Lectura'), controller.getCategoriaById);
 
 // POST /api/categorias
-routes.post('/categorias', controller.createCategoria);
+routes.post('/categorias', verifyToken, verificarRol('Escritura'), controller.createCategoria);
 
 // PUT /api/categorias:id
-routes.put('/categorias/:id', controller.updateCategoria);
+routes.put('/categorias/:id', verifyToken, verificarRol('Actualizacion'), controller.updateCategoria);
 
 // DELETE /api/categorias:id
-routes.delete('/categorias/:id', controller.deleteCategoria);
+routes.delete('/categorias/:id', verifyToken, verificarRol('Eliminacion'), controller.deleteCategoria);
 
 module.exports = routes;

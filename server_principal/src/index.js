@@ -1,5 +1,4 @@
 const express = require('express');
-const db = require('./utils/db.js');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger.json');
 
@@ -32,15 +31,7 @@ app.use('/api', routesProductos);
 app.use('/api', routesOrdenes);
 
 app.get('/', async (req, res) => {
-    try {
-        db.getNow().then((now) => {
-            res.send('<h1>Api de Facturacion</h1> <br> ' + 
-                        'Fecha y hora actual: ' + now);
-            console.log('Fecha y hora actual:', now);
-        });
-    } catch (error) {
-        console.error(error.message);
-    }
+    res.send('Api de Facturacion - Por favor inicie sesión para continuar');
 });
 
 // Endpoint de prueba
