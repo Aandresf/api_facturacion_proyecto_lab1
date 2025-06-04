@@ -1,0 +1,21 @@
+services:
+  proyect_db:
+    image: postgres:16.8-alpine3.20
+    container_name: auth_db
+    environment:
+      POSTGRES_DB: ${AUTH_POSTGRES_DB}
+      POSTGRES_USER: ${AUTH_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
+    ports:
+      - "${AUTH_POSTGRES_EXTERNAL_PORT}:${AUTH_POSTGRES_INTERNAL_PORT}"
+    volumes:
+      - postgres_data:${AUTH_POSTGRES_DATA_PATH} # Usamos el volumen nombrado
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_POSTGRES_USER} -d ${AUTH_POSTGRES_DB}"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 3s
+
+volumes: # Definición del volumen nombrado
+  postgres_data:
